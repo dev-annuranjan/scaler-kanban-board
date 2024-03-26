@@ -1,0 +1,44 @@
+{
+  "boards": [
+    {
+      "id": "bc864d33-a305-4520-b741-d3c914ea6205",
+      "name": "to-do",
+      "description": "Tasks that need to be done",
+      "color": "--opt1",
+      "startTaskID": "df230823-540a-4f9f-b35b-b41c15cafe9f",
+      "endTaskID": "11c2dfee-9539-4d17-91a9-d5212986f253"
+    },
+    {
+      "id": "459ebe8d-a8f6-4a0c-864a-327eb0407934",
+      "name": "in-progress",
+      "description": "Tasks that need to be done",
+      "color": "--opt3",
+      "startTaskID": "",
+      "endTaskID": ""
+    },
+    {
+      "id": "403edc77-0f94-4a7b-b201-a2cf25b0f524",
+      "name": "done",
+      "description": "Tasks that need to be done",
+      "color": "--opt2",
+      "startTaskID": "",
+      "endTaskID": ""
+    }
+  ],
+  "tasks": {
+    "df230823-540a-4f9f-b35b-b41c15cafe9f": {
+      "id": "df230823-540a-4f9f-b35b-b41c15cafe9f",
+      "text": "The first to-do task",
+      "boardID": "bc864d33-a305-4520-b741-d3c914ea6205",
+      "prev": null,
+      "next": "11c2dfee-9539-4d17-91a9-d5212986f253"
+    },
+    "11c2dfee-9539-4d17-91a9-d5212986f253": {
+      "id": "11c2dfee-9539-4d17-91a9-d5212986f253",
+      "text": "The second to-do task",
+      "boardID": "bc864d33-a305-4520-b741-d3c914ea6205",
+      "next": null,
+      "prev": "df230823-540a-4f9f-b35b-b41c15cafe9f"
+    }
+  }
+}

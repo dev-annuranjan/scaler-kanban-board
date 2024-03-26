@@ -1,0 +1,322 @@
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/*:root {*/
+/*    --opt1: #5f9ea0; !*cadet blue*!*/
+/*    --opt2: #6495ed; !*cornflowerblue*!*/
+/*    --opt3: #556b2f; !*darkolivegreen*!*/
+/*    --opt4: #ed143d; !*crimson*!*/
+/*    --opt5: #fff8dc; !*cornsilk*!*/
+/*}*/
+
+body {
+    margin: 0;
+    font-size: 62.5%;
+    background-color: darkslategrey;
+    padding: 2rem;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    min-height: calc(100vh - 4rem);
+}
+
+.boards-container {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: start;
+}
+
+.board {
+    height: 100%;
+    width: 25rem;
+    border: 2px solid;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.task {
+    border: 2px solid;
+    padding: 0.5rem 0.8rem;
+    cursor: pointer;
+    border-radius: 0.4rem;
+    height: 3rem;
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+}
+
+.task-icons {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+}
+
+.task-icons .delete-icon,
+.task-icons .lock-icon,
+.task-icons .unlock-icon {
+    height: 1.2rem;
+    width: 1.2rem;
+}
+
+.draggedTask {
+    border: 2px dotted;
+}
+
+.hidden {
+    display: none;
+}
+
+.settings-icon svg {
+    height: 20px;
+    width: 20px;
+}
+
+.myCustomStyle svg {
+    color: red;
+}
+
+.board-header {
+    height: 4rem;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    border-radius: 0.3rem;
+    box-shadow: rgba(149, 157, 165, 0.2) 0 0.8rem 2.4rem;
+    margin-bottom: 1.6rem;
+}
+
+.board-title {
+    font-size: 2rem;
+    margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.board-icons {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.board-icons svg {
+    height: 1.6rem;
+    width: 1.6rem;
+}
+
+.board-icons .add-icon,
+.board-icons .settings-icon {
+    border: 1px solid;
+    padding: 0.4rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+}
+
+ul.tasks {
+    list-style: none;
+    padding: 0;
+    font-size: 1rem;
+}
+
+span.task-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.add-icon-container {
+    border: 2px solid;
+    border-radius: 1rem;
+    padding: 0.8rem;
+    min-width: 4rem;
+    height: 4rem;
+    cursor: pointer;
+    margin-left: 1rem;
+}
+
+.add-icon-container .add-icon {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+
+/******************************************************************************/
+article.board-modal {
+    width: 20rem;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    border-radius: 0.8rem;
+    font-size: 1.2rem;
+    padding: 2rem;
+}
+
+/*.board-header {*/
+/*    background-color: darken();*/
+/*}*/
+
+h1.add-board-title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: normal;
+}
+
+section.add-board-input {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+}
+
+.add-board-input input {
+    border-radius: 0.2rem;
+    border: 1px solid;
+    height: 2rem;
+    padding: 0.3rem 0.8rem;
+    font-size: 1.2rem;
+}
+
+.add-board-color h2 {
+    font-size: 1.2rem;
+    font-weight: normal;
+}
+
+.board-color-options {
+    display: flex;
+    gap: 0.5rem;
+}
+
+span.color-option {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 1rem;
+    border: 1px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.color-option span {
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+}
+
+/*********/
+
+
+section div {
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+span#custom-color {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    border-radius: 0.5rem;
+    border: 4px double;
+}
+
+#custom-color input {
+    width: 3rem;
+    height: 3rem;
+    border: none;
+    background: none;
+    padding: 0;
+    border-radius: 1rem;
+    appearance: none;
+    margin: -25%;
+}
+
+section.add-board-buttons {
+    display: flex;
+    gap: 2rem;
+}
+
+.add-board-buttons button {
+    height: 2rem;
+    width: 4rem;
+}
+
+/******************************************************************************/
+
+article.task-modal {
+    width: 20rem;
+    background-color: white;
+    border-radius: 0.8rem;
+    font-size: 1.2rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+h1.add-task-title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: normal;
+}
+
+section.add-task-input {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+    width: 100%;
+}
+
+.add-task-input input {
+    border-radius: 0.2rem;
+    border: 1px solid;
+    height: 2rem;
+    padding: 0.3rem 0.8rem;
+    font-size: 1.2rem;
+}
+
+.add-task-input select {
+    height: 2rem;
+    border: 1px solid;
+    border-radius: 0.2rem;
+}
+
+section.add-task-btns {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+
+.add-task-btns button {
+    height: 2rem;
+    width: 4rem;
+}
+
+/******************************************************************************/
