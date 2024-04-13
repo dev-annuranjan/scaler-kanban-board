@@ -1,162 +1,171 @@
-import data from './data/data.json' assert {type: 'json'};
+import data from "./data/data.json" assert { type: "json" };
 
-import createBoard from './modals/createBoard.js';
+import createBoard from "./modals/createBoard.js";
 import createBoardsModal from "/modals/createNewBoardModal.js";
 import createTask from "/modals/createTask.js";
-import createTaskModal from '/modals/createNewTaskModal.js';
+import createTaskModal from "/modals/createNewTaskModal.js";
 
-import {BTN_KEYS, PRESET_COLORS} from '/data/constKeys.js';
-import {saveTask, deleteTask} from '/modals/taskOperations.js';
+import { BTN_KEYS, PRESET_COLORS } from "/data/constKeys.js";
+import { saveTask, deleteTask } from "/modals/taskOperations.js";
 
 const containerEl = document.querySelector(".boards-container");
-const addBoardIcon = document.querySelector('.add-icon-container');
-const boardsContainer = document.querySelector('.boards-container');
-const overLayEl = document.querySelector('.overlay');
-const modal = overLayEl.querySelector('.modal');
+const addBoardIcon = document.querySelector(".add-icon-container");
+const boardsContainer = document.querySelector(".boards-container");
+const overLayEl = document.querySelector(".overlay");
+const modal = overLayEl.querySelector(".modal");
 
 const state = {
-    appData: {boards: [], tasks: {}},
-    selectedBoard: "",
-    draggingTask: "",
-    draggedOverBoard: "",
-    dragging_center: 0,
-    insertPosition: {
-        before: 0,
-        after: 1
-    }
+  appData: { boards: [], tasks: {} },
+  selectedBoard: "",
+  draggingTask: "",
+  draggedOverBoard: "",
+  dragging_center: 0,
+  insertPosition: {
+    before: 0,
+    after: 1,
+  },
 };
 
-addBoardIcon.addEventListener('click', handleAddBoardIcon);
+addBoardIcon.addEventListener("click", handleAddBoardIcon);
 
 function handleAddBoardIcon() {
-    if (modal.children.length === 0) {
-        modal.appendChild(createBoardsModal(closeModal.bind(this)));
-        overLayEl.style.display = "block";
-    }
+  if (modal.children.length === 0) {
+    modal.appendChild(
+      createBoardsModal(closeModal.bind(this), updateAppData.bind(this))
+    );
+    overLayEl.style.display = "block";
+  }
 }
 
 function init() {
-    // Hydrating App
-    state.appData = data;
+  // Hydrating App
+  state.appData = data;
 
-    // Setting preset colors in CSS
-    const root = document.documentElement;
-    for (const color in PRESET_COLORS) {
-        root.style.setProperty(color, PRESET_COLORS[color]);
+  // Setting preset colors in CSS
+  const root = document.documentElement;
+  for (const color in PRESET_COLORS) {
+    root.style.setProperty(color, PRESET_COLORS[color]);
+  }
+
+  // Creating Boards
+  const { boards } = state.appData;
+  const boardsFragment = document.createDocumentFragment();
+  for (const board of boards) {
+    const boardEl = createBoard(board);
+
+    let taskID = board.startTaskID;
+    let task = state.appData.tasks[taskID];
+    if (task) {
+      const boardBody = boardEl.querySelector("ul");
+      while (task) {
+        const taskEl = createTask(task);
+        boardBody.appendChild(taskEl);
+        task = state.appData.tasks[task.next];
+      }
     }
+    boardsFragment.appendChild(boardEl);
+  }
 
-    // Creating Boards
-    const {boards} = state.appData;
-    const boardsFragment = document.createDocumentFragment();
-    for (const board of boards) {
-        const boardEl = createBoard(board);
-
-        let taskID = board.startTaskID;
-        let task = state.appData.tasks[taskID];
-        if (task) {
-            const boardBody = boardEl.querySelector('ul');
-            while (task) {
-                const taskEl = createTask(task);
-                boardBody.appendChild(taskEl);
-                task = state.appData.tasks[task.next];
-            }
-        }
-        boardsFragment.appendChild(boardEl);
-    }
-
-    boardsContainer.appendChild(boardsFragment);
-    containerEl.addEventListener('click', handleContainerClick);
+  boardsContainer.appendChild(boardsFragment);
+  containerEl.addEventListener("click", handleContainerClick);
 }
 
 function handleContainerClick(event) {
-    const targetEl = event.target;
-    if (targetEl.closest('.add-icon')) {
-        const targetBoard = targetEl.closest('.board');
-        const boardID = targetBoard.getAttribute('id');
+  const targetEl = event.target;
+  if (targetEl.closest(".add-icon")) {
+    const targetBoard = targetEl.closest(".board");
+    const boardID = targetBoard.getAttribute("id");
 
-        const boardData = state.appData?.boards?.find(board => board.id === boardID);
-        state.selectedBoard = boardData;
-        state.selectedBoardEl = targetBoard;
+    const boardData = state.appData?.boards?.find(
+      (board) => board.id === boardID
+    );
+    state.selectedBoard = boardData;
+    state.selectedBoardEl = targetBoard;
 
-        const taskModal = createTaskModal(boardData, state.appData.boards);
-        taskModal.addEventListener('click', handleModalClick);
-        const firstInput = taskModal.querySelector('input');
-        modal.appendChild(taskModal);
-        overLayEl.style.display = 'block';
-        firstInput.focus();
-    } else if (targetEl.closest(".settings-icon")) {
-        alert("settings clicked");
+    const taskModal = createTaskModal(boardData, state.appData.boards);
+    taskModal.addEventListener("click", handleModalClick);
+    const firstInput = taskModal.querySelector("input");
+    modal.appendChild(taskModal);
+    overLayEl.style.display = "block";
+    firstInput.focus();
+  } else if (targetEl.closest(".settings-icon")) {
+    alert("settings clicked");
+  } else if (targetEl.closest(".delete-icon")) {
+    const targetTask = targetEl.closest(".task");
+    const taskID = targetTask.getAttribute("id");
+    targetTask.remove();
+    deleteTask.call(state, taskID);
+    console.log(state);
+    alert("delete clicked");
+  } else if (targetEl.closest(".lock-icon")) {
+    const targetTask = targetEl.closest(".task");
+    targetTask.setAttribute("draggable", "true");
 
-    } else if (targetEl.closest('.delete-icon')) {
-        const targetTask = targetEl.closest('.task');
-        const taskID = targetTask.getAttribute('id');
-        targetTask.remove();
-        deleteTask.call(state, taskID);
-        console.log(state);
-        alert('delete clicked');
-    } else if (targetEl.closest('.lock-icon')) {
-        const targetTask = targetEl.closest('.task');
-        targetTask.setAttribute('draggable', "true");
+    const lockIcon = targetTask.querySelector(".lock-icon");
+    const iconContainer = lockIcon.parentElement;
+    lockIcon.remove();
+    iconContainer.appendChild(
+      document.querySelector(".hidden .unlock-icon")?.cloneNode(true)
+    );
+    alert("task unlocked");
+  } else if (targetEl.closest(".unlock-icon")) {
+    const targetTask = targetEl.closest(".task");
+    targetTask.setAttribute("draggable", "false");
 
-        const lockIcon = targetTask.querySelector('.lock-icon');
-        const iconContainer = lockIcon.parentElement;
-        lockIcon.remove()
-        iconContainer.appendChild(document.querySelector('.hidden .unlock-icon')?.cloneNode(true));
-        alert('task unlocked');
-    } else if (targetEl.closest('.unlock-icon')) {
-        const targetTask = targetEl.closest('.task');
-        targetTask.setAttribute('draggable', "false");
-
-        const lockIcon = targetTask.querySelector('.unlock-icon');
-        const iconContainer = lockIcon.parentElement;
-        lockIcon.remove()
-        iconContainer.appendChild(document.querySelector('.hidden .lock-icon')?.cloneNode(true));
-        alert('task locked');
-    }
+    const lockIcon = targetTask.querySelector(".unlock-icon");
+    const iconContainer = lockIcon.parentElement;
+    lockIcon.remove();
+    iconContainer.appendChild(
+      document.querySelector(".hidden .lock-icon")?.cloneNode(true)
+    );
+    alert("task locked");
+  }
 }
 
 function handleModalClick(event) {
-    const targetEl = event.target;
-    if (targetEl.id) {
-        switch (targetEl.id) {
-            case BTN_KEYS.saveTask:
-                handleSaveTask(event);
-                break;
-            case BTN_KEYS.saveBoard:
-                handleCancelTask(event);
-                break;
-            case BTN_KEYS.cancelTask:
-            case BTN_KEYS.cancelBoard:
-                closeModal();
-                break;
-            default:
-        }
+  const targetEl = event.target;
+  if (targetEl.id) {
+    switch (targetEl.id) {
+      case BTN_KEYS.saveTask:
+        handleSaveTask(event);
+        break;
+      case BTN_KEYS.saveBoard:
+        handleCancelTask(event);
+        break;
+      case BTN_KEYS.cancelTask:
+      case BTN_KEYS.cancelBoard:
+        closeModal();
+        break;
+      default:
     }
+  }
 }
 
 function handleSaveTask() {
-    saveTask.call(state, modal);
-    cleanUpAfterModal();
-    closeModal();
+  saveTask.call(state, modal);
+  cleanUpAfterModal();
+  closeModal();
 }
 
 function handleCancelTask() {
-    closeModal();
+  closeModal();
 }
 
 function cleanUpAfterModal() {
-    state.selectedBoardEl = "";
-    state.selectedBoard = "";
+  state.selectedBoardEl = "";
+  state.selectedBoard = "";
 }
 
 function closeModal() {
-    debugger
-    modal.innerHTML = "";
-    overLayEl.style.display = "none";
+  modal.innerHTML = "";
+  overLayEl.style.display = "none";
+}
+
+function updateAppData(appData) {
+  state.appData = appData;
 }
 
 init();
-
 
 // function handleAddTaskIcon() {
 //     const head = document.querySelector('head');
@@ -183,7 +192,6 @@ init();
 //         todoBoardEl.appendChild(p);
 //     }
 // });
-
 
 // #endregion
 
@@ -286,7 +294,6 @@ init();
 //     const rect = element.getBoundingClientRect();
 //     return Math.floor((rect.top + rect.bottom) / 2);
 // }
-
 
 // function createBoard() {
 //     <div id="todo-board" className="board">
