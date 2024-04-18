@@ -13,16 +13,16 @@
       "name": "in-progress",
       "description": "Tasks that need to be done",
       "color": "--opt3",
-      "startTaskID": "",
-      "endTaskID": ""
+      "startTaskID": null,
+      "endTaskID": null
     },
     {
       "id": "403edc77-0f94-4a7b-b201-a2cf25b0f524",
       "name": "done",
       "description": "Tasks that need to be done",
       "color": "--opt2",
-      "startTaskID": "",
-      "endTaskID": ""
+      "startTaskID": null,
+      "endTaskID": null
     }
   ],
   "tasks": {
